@@ -1,8 +1,8 @@
-# 加密解密
+#SESSION组件
 
 ##介绍
 
-PHP 中的Mcrypt扩充扩展包提供功能强大的加密功能。
+组件提供高效的SESSION管理手段, 提供多种处理引擎包括File、Mysql、Memcache、Redis等,支持统一调用接口使用方便。
 
 [TOC]
 
@@ -12,35 +12,50 @@ PHP 中的Mcrypt扩充扩展包提供功能强大的加密功能。
 使用 composer 命令进行安装或下载源代码使用。
 
 ```
-composer require houdunwang/crypt
+composer require houdunwang/session
 ```
 > HDPHP 框架已经内置此组件，无需要安装
 
 ####生成实例
 ```
-$obj = new \houdunwang\crypt\Crypt();
+$obj = new \houdunwang\session\Session();
 ```
 
-####配置密钥
+####设置引擎
 ```
-$obj->key('houdunwang.com');
-```
-
-####加密操作
-```
-$encrypted = $obj->encrypt('后盾人  人人做后盾');
+$obj->driver( 'file' );
 ```
 
+####启动组件
 ```
-//自定义密钥,解密时使用相同密钥才可解
-$encrypted = $obj->encrypt('后盾网  人人做后盾','houdunwang.com');
+$obj->bootstrap();
 ```
 
-####解密操作
+##指令
+
+####设置
 ```
-$decrypted = $obj->decrypt($encryptedValue);
+$obj->set('name','houdunwang.com');
 ```
+
+####获取
 ```
-//自定义密钥,使用加密时相同的密钥才可解
-$decrypted = $obj->decrypt($encryptedValue,'houdunwang.com');
+$obj->get('name');
 ```
+
+####判断
+```
+$obj->has('name');
+```
+
+####删除
+```
+$obj->del('name');
+```
+
+####清空
+删除所有数据
+```
+$obj->flush();
+```
+

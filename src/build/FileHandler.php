@@ -9,6 +9,8 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
 
+use houdunwang\config\Config;
+
 /**
  * 文件处理
  * Class FileHandler
@@ -22,14 +24,14 @@ class FileHandler implements AbSession {
 
 	//连接
 	public function connect() {
-		$this->dir = ROOT_PATH . '/storage/session';
+		$this->dir = realpath( Config::get( 'session.file.path' ) );
 		//创建目录
 		if ( ! is_dir( $this->dir ) ) {
 			mkdir( $this->dir, 0755, true );
 			file_put_contents( $this->dir . '/index.html', '' );
 		}
 
-		$this->file = ROOT_PATH . '/storage/session/' . $this->session_id . '.php';
+		$this->file = $this->dir . '/' . $this->session_id . '.php';
 	}
 
 	//读取数据
@@ -43,20 +45,20 @@ class FileHandler implements AbSession {
 
 	//保存数据
 	public function write() {
-		$data = "<?php if(!defined('ROOT_PATH'))exit;\nreturn " . var_export( $this->items, true ) . ";\n?>";
+		$data = "<?php \nreturn " . var_export( $this->items, true ) . ";\n?>";
 		file_put_contents( $this->file, $data );
 	}
 
 	//删除所有数据
 	public function flush() {
-		return Dir::delFile( $this->file );
+		return is_file( $this->file ) or unlink( $this->file );
 	}
 
 	//垃圾回收
 	public function gc() {
 		foreach ( glob( $this->dir . '/*.php' ) as $f ) {
 			if ( basename( $f ) != basename( $this->file ) && ( filemtime( $this->file ) + $this->expire ) < time() ) {
-				Dir::delFile( $f );
+				unlink( $this->file );
 			}
 		}
 	}

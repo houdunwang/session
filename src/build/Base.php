@@ -1,4 +1,8 @@
 <?php namespace houdunwang\session\build;
+
+use houdunwang\config\Config;
+use houdunwang\cookie\Cookie;
+
 trait Base {
 	//session_id
 	protected $session_id;
@@ -9,10 +13,10 @@ trait Base {
 	//session 数据
 	protected $items = [ ];
 
-	public function start() {
-		$this->session_name = c( 'session.name' );
+	public function bootstrap() {
+		$this->session_name = Config::get( 'session.name' );
 		$this->session_id   = $this->getSessionId();
-		$this->expire       = c( 'session.expire' ) ?: 3600;
+		$this->expire       = Config::get( 'session.expire' ) ?: 3600;
 		$this->connect();
 		$this->items = $this->read() ?: [ ];
 	}
@@ -22,11 +26,13 @@ trait Base {
 	 * @return string
 	 */
 	final private function getSessionId() {
-		$id = Cookie::get( $this->session_name );
+		$cookie = new Cookie();
+		$cookie->secureKey( Config::get( 'session.secureKey' ) );
+		$id = $cookie->get( $this->session_name );
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
-			$id = 'hdphp' . md5( Request::ip() . microtime( true ) ) . mt_rand( 1, 99999 );
+			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
 		}
-		Cookie::set( $this->session_name, $id, $this->expire, '/', c( 'session.domain' ) );
+		$cookie->set( $this->session_name, $id, $this->expire, '/', Config::get( 'session.domain' ) );
 
 		return $id;
 	}
@@ -124,6 +130,7 @@ trait Base {
 		return $this->set( '_FLASH_.' . $name, $value );
 	}
 
+	//析构函数
 	public function __destruct() {
 		$this->write();
 		if ( mt_rand( 1, 5 ) ) {
