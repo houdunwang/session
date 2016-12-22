@@ -54,7 +54,7 @@ class MysqlHandler implements AbSession {
 
 	//读取
 	public function read() {
-		$data = $this->link->where( 'sessid', $this->session_id )->where( 'atime', '>', time() - $this->expire )->pluck( 'data' );
+		$data = $this->link->where( 'session_id', $this->session_id )->where( 'atime', '>', time() - $this->expire )->pluck( 'data' );
 
 		return $data ? unserialize( $data ) : [ ];
 	}
@@ -62,7 +62,7 @@ class MysqlHandler implements AbSession {
 	//写入
 	public function write() {
 		$data = serialize( $this->items );
-		$sql  = "REPLACE INTO " . $this->table . "(sessid,data,atime) ";
+		$sql  = "REPLACE INTO " . $this->table . "(session_id,data,atime) ";
 		$sql .= "VALUES('{$this->session_id}','$data'," . time() . ')';
 
 		return $this->link->execute( $sql );
@@ -70,7 +70,7 @@ class MysqlHandler implements AbSession {
 
 	//卸载
 	public function flush() {
-		$sql = "DELETE FROM " . $this->table . " WHERE sessid='{$this->session_id}'";
+		$sql = "DELETE FROM " . $this->table . " WHERE session_id='{$this->session_id}'";
 
 		return $this->link->execute( $sql );
 	}
@@ -80,7 +80,7 @@ class MysqlHandler implements AbSession {
 	 * @return boolean
 	 */
 	public function gc() {
-		$sql = "DELETE FROM " . $this->table . " WHERE atime<" . ( time() - $this->expire ) . " AND sessid<>'" . session_id() . "'";
+		$sql = "DELETE FROM " . $this->table . " WHERE atime<" . ( time() - $this->expire ) . " AND session_id<>'" . session_id() . "'";
 
 		return $this->link->execute( $sql );
 	}

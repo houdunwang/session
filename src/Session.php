@@ -20,7 +20,6 @@ class Session {
 
 	//开启
 	public function __construct() {
-
 	}
 
 	public function driver( $driver ) {

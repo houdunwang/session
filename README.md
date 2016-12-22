@@ -16,6 +16,52 @@ composer require houdunwang/session
 ```
 > HDPHP 框架已经内置此组件，无需要安装
 
+####配置
+```
+$config = [
+	//session_name
+	'name'      => 'hdcmsid',
+	//cookie加密密钥
+	'secureKey' => 'houdunwang88',
+	//有效域名
+	'domain'    => '',
+	//过期时间 0 会话时间 3600 为一小时
+	'expire'    => 0,
+	#File引擎配置
+	'file'      => [
+		'path' => 'storage/session',
+	],
+	#Mysql引擎配置
+	'mysql'     => [
+		//主机
+		'host'     => 'localhost',
+		//类型
+		'driver'   => 'mysql',
+		//帐号
+		'user'     => 'root',
+		//密码
+		'password' => 'admin888',
+		//数据库
+		'database' => 'demo',
+		//缓存表
+		'table'    => 'session'
+	],
+	#Memcache引擎配置
+	'memcache'  => [
+		'host' => 'localhost',
+		'port' => 11211,
+	],
+	#Redis引擎配置
+	'redis'     => [
+		'host'     => 'localhost',
+		'port'     => 11211,
+		'password' => '',
+		'database' => 0,
+	]
+];
+\houdunwang\config\Config::set('session', $config);
+```
+
 ####生成实例
 ```
 $obj = new \houdunwang\session\Session();
@@ -23,7 +69,7 @@ $obj = new \houdunwang\session\Session();
 
 ####设置引擎
 ```
-$obj->driver( 'file' );
+$obj->driver('file');
 ```
 
 ####启动组件
@@ -57,5 +103,26 @@ $obj->del('name');
 删除所有数据
 ```
 $obj->flush();
+```
+
+###数据库引擎
+组件提供了Mysql处理引擎。
+
+####创建数据表
+执行以下SQL语句创建数据表
+```
+CREATE TABLE `session` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `session_id` char(100) DEFAULT NULL,
+  `data` text,
+  `atime` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `session_id` (`session_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+```
+
+####设置引擎
+```
+$obj->driver('mysql');
 ```
 

@@ -43,7 +43,7 @@ $config = [
 ];
 \houdunwang\config\Config::set( 'session', $config );
 $obj = new \houdunwang\session\Session();
-$obj->driver( 'file' );
+$obj->driver( 'mysql' );
 $obj->bootstrap();
 //$obj->set('a',33);
 echo $obj->get('a');
