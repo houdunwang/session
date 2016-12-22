@@ -84,9 +84,21 @@ $obj->bootstrap();
 $obj->set('name','houdunwang.com');
 ```
 
+####闪存
+通过 flash 指令设置的数据会在下次请求结束时自动删除, 这类动作我们称为闪存数据。
+
+```
+$obj->flash('name','houdunren.com');
+```
+
 ####获取
 ```
 $obj->get('name');
+```
+
+####获取所有
+```
+$obj->all();
 ```
 
 ####判断

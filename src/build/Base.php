@@ -132,6 +132,8 @@ trait Base {
 
 	//析构函数
 	public function __destruct() {
+		//删除闪存
+		$this->flash('[del]');
 		$this->write();
 		if ( mt_rand( 1, 5 ) ) {
 			$this->gc();
