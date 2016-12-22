@@ -21,33 +21,6 @@ class MysqlHandler implements AbSession {
 
 	//初始
 	public function connect() {
-		if ( ! Config::get( 'database' ) ) {
-			$config = array_merge( [
-				//读库列表
-				'read'     => [ ],
-				//写库列表
-				'write'    => [ ],
-				//表字段缓存目录
-				'cacheDir' => 'storage/field',
-				//开启读写分离
-				'proxy'    => false,
-				//开启调度模式
-				'debug'    => true,
-				//主机
-				'host'     => 'localhost',
-				//类型
-				'driver'   => 'mysql',
-				//帐号
-				'user'     => 'root',
-				//密码
-				'password' => 'admin888',
-				//数据库
-				'database' => 'demo',
-				//表前缀
-				'prefix'   => ''
-			], Config::get( 'session.mysql' ) );
-			Config::set( 'database', $config );
-		}
 		$this->link  = ( new Db() )->table( Config::get( 'session.mysql.table' ) );
 		$this->table = $this->link->getTable();
 	}

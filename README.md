@@ -33,16 +33,6 @@ $config = [
 	],
 	#Mysql引擎配置
 	'mysql'     => [
-		//主机
-		'host'     => 'localhost',
-		//类型
-		'driver'   => 'mysql',
-		//帐号
-		'user'     => 'root',
-		//密码
-		'password' => 'admin888',
-		//数据库
-		'database' => 'demo',
 		//缓存表
 		'table'    => 'session'
 	],
@@ -133,7 +123,34 @@ CREATE TABLE `session` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
-####设置引擎
+####设置数据库连接配置
+数据库引擎使用了 [Db数据库组件](https://github.com/houdunwang/db) 所以需要设置数据库连接参数。
+```
+\houdunwang\config\Config::set( 'database', [
+    //读库列表
+	'read'     => [ ],
+	//写库列表
+	'write'    => [ ],
+	//表字段缓存目录
+	'cacheDir' => 'storage/field',
+	//开启读写分离
+	'proxy'    => false,
+	//主机
+	'host'     => 'localhost',
+	//类型
+	'driver'   => 'mysql',
+	//帐号
+	'user'     => 'root',
+	//密码
+	'password' => 'admin888',
+	//数据库
+	'database' => 'demo',
+	//表前缀
+	'prefix'   => ''
+] );
+```
+
+####设置连接引擎
 ```
 $obj->driver('mysql');
 ```

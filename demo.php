@@ -15,16 +15,6 @@ $config = [
 	],
 	#Mysql
 	'mysql'     => [
-		//主机
-		'host'     => 'localhost',
-		//类型
-		'driver'   => 'mysql',
-		//帐号
-		'user'     => 'root',
-		//密码
-		'password' => 'admin888',
-		//数据库
-		'database' => 'demo',
 		//缓存表
 		'table'    => 'session'
 	],
