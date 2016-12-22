@@ -57,16 +57,6 @@ $config = [
 $obj = new \houdunwang\session\Session();
 ```
 
-####设置引擎
-```
-$obj->driver('file');
-```
-
-####启动组件
-```
-$obj->bootstrap();
-```
-
 ##指令
 
 ####设置
@@ -124,7 +114,8 @@ CREATE TABLE `session` (
 ```
 
 ####设置数据库连接配置
-数据库引擎使用了 [Db数据库组件](https://github.com/houdunwang/db) 所以需要设置数据库连接参数。
+如果SESSION处理使用数据库引擎, 首先要对数据库连接参数进行配置。可以参考 [Db数据库组件](https://github.com/houdunwang/db) 文档。
+
 ```
 \houdunwang\config\Config::set( 'database', [
     //读库列表

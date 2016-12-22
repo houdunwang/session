@@ -1,6 +1,8 @@
 <?php
 require 'vendor/autoload.php';
 $config = [
+	//引擎:file,mysql,memcache,redis
+	'driver'    => 'file',
 	//session_name
 	'name'      => 'hdcmsid',
 	//cookie加密密钥
@@ -16,7 +18,7 @@ $config = [
 	#Mysql
 	'mysql'     => [
 		//缓存表
-		'table'    => 'session'
+		'table' => 'session'
 	],
 	#Memcache
 	'memcache'  => [
@@ -33,7 +35,5 @@ $config = [
 ];
 \houdunwang\config\Config::set( 'session', $config );
 $obj = new \houdunwang\session\Session();
-$obj->driver( 'mysql' );
-$obj->bootstrap();
 //$obj->set('a',33);
-echo $obj->get('a');
+echo $obj->get( 'a' );
