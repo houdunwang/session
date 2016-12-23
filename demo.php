@@ -34,6 +34,5 @@ $config = [
 	]
 ];
 \houdunwang\config\Config::set( 'session', $config );
-$obj = new \houdunwang\session\Session();
-//$obj->set('a',33);
-echo $obj->get( 'a' );
+//\houdunwang\session\Session::set('a',33);
+echo \houdunwang\session\Session::get( 'a' );

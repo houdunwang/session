@@ -18,23 +18,34 @@ use houdunwang\config\Config;
  */
 class Session {
 	//操作驱动
-	protected static $driver;
+	protected $link;
 
-	//开启
-	public function __construct() {
+	//设置驱动
+	protected static function driver( $driver = null ) {
+		$driver = $driver ?: Config::get( 'session.driver' );
+		$driver = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
+		static $links = [ ];
+		if ( ! isset( $links[ $driver ] ) ) {
+			$obj       = new Session();
+			$obj->link = new $driver;
+			$obj->link->bootstrap();
+
+			$links[ $driver ] = $obj;
+		}
+
+		return $links[ $driver ];
 	}
 
-	//魔术方法
 	public function __call( $method, $params ) {
-		if ( is_null( self::$driver ) ) {
-			$driver       = '\houdunwang\session\\build\\' . ucfirst( Config::get( 'session.driver' ) ) . 'Handler';
-			self::$driver = new $driver();
-			self::$driver->bootstrap();
+		if ( is_null( $this->link ) ) {
+			$this->driver();
 		}
-		if ( ! method_exists( $this->driver, $method ) ) {
-			throw new \Exception( '请求方法不存在' );
+		if ( method_exists( $this->link, $method ) ) {
+			return call_user_func_array( [ $this->link, $method ], $params );
 		}
+	}
 
-		return call_user_func_array( [ $this->driver, $method ], $params );
+	public static function __callStatic( $name, $arguments ) {
+		return call_user_func_array( [ static::driver(), $name ], $arguments );
 	}
 }

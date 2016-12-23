@@ -52,49 +52,42 @@ $config = [
 \houdunwang\config\Config::set('session', $config);
 ```
 
-####生成实例
-```
-$obj = new \houdunwang\session\Session();
-```
-
-##指令
-
 ####设置
 ```
-$obj->set('name','houdunwang.com');
+\houdunwang\config\Config::set('name','houdunwang.com');
 ```
 
 ####闪存
 通过 flash 指令设置的数据会在下次请求结束时自动删除, 这类动作我们称为闪存数据。
 
 ```
-$obj->flash('name','houdunren.com');
+\houdunwang\config\Config::flash('name','houdunren.com');
 ```
 
 ####获取
 ```
-$obj->get('name');
+\houdunwang\config\Config::get('name');
 ```
 
 ####获取所有
 ```
-$obj->all();
+\houdunwang\config\Config::all();
 ```
 
 ####判断
 ```
-$obj->has('name');
+\houdunwang\config\Config::has('name');
 ```
 
 ####删除
 ```
-$obj->del('name');
+\houdunwang\config\Config::del('name');
 ```
 
 ####清空
 删除所有数据
 ```
-$obj->flush();
+\houdunwang\config\Config::flush();
 ```
 
 ###数据库引擎
@@ -140,9 +133,3 @@ CREATE TABLE `session` (
 	'prefix'   => ''
 ] );
 ```
-
-####设置连接引擎
-```
-$obj->driver('mysql');
-```
-
