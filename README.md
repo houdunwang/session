@@ -49,45 +49,45 @@ $config = [
 		'database' => 0,
 	]
 ];
-\houdunwang\config\Config::set('session', $config);
+\houdunwang\config\Config::set( 'session', $config );
 ```
 
 ####设置
 ```
-\houdunwang\config\Config::set('name','houdunwang.com');
+\houdunwang\session\Session::set('name','houdunwang.com');
 ```
 
 ####闪存
 通过 flash 指令设置的数据会在下次请求结束时自动删除, 这类动作我们称为闪存数据。
 
 ```
-\houdunwang\config\Config::flash('name','houdunren.com');
+\houdunwang\session\Session::flash('name','houdunren.com');
 ```
 
 ####获取
 ```
-\houdunwang\config\Config::get('name');
+\houdunwang\session\Session::get('name');
 ```
 
 ####获取所有
 ```
-\houdunwang\config\Config::all();
+\houdunwang\session\Session::all();
 ```
 
 ####判断
 ```
-\houdunwang\config\Config::has('name');
+\houdunwang\session\Session::has('name');
 ```
 
 ####删除
 ```
-\houdunwang\config\Config::del('name');
+\houdunwang\session\Session::del('name');
 ```
 
 ####清空
 删除所有数据
 ```
-\houdunwang\config\Config::flush();
+\houdunwang\session\Session::flush();
 ```
 
 ###数据库引擎
@@ -110,7 +110,7 @@ CREATE TABLE `session` (
 如果SESSION处理使用数据库引擎, 首先要对数据库连接参数进行配置。可以参考 [Db数据库组件](https://github.com/houdunwang/db) 文档。
 
 ```
-\houdunwang\config\Config::set( 'database', [
+\houdunwang\session\Session::set( 'database', [
     //读库列表
 	'read'     => [ ],
 	//写库列表
