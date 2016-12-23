@@ -24,12 +24,13 @@ class FileHandler implements AbSession {
 
 	//连接
 	public function connect() {
-		$this->dir = realpath( Config::get( 'session.file.path' ) );
+		$dir = Config::get( 'session.file.path' );
 		//创建目录
-		if ( ! is_dir( $this->dir ) ) {
-			mkdir( $this->dir, 0755, true );
-			file_put_contents( $this->dir . '/index.html', '' );
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0755, true );
+			file_put_contents( $dir . '/index.html', '' );
 		}
+		$this->dir = realpath( $dir );
 
 		$this->file = $this->dir . '/' . $this->session_id . '.php';
 	}
