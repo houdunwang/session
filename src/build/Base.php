@@ -27,7 +27,7 @@ trait Base {
 	 */
 	final private function getSessionId() {
 		$cookie = new Cookie();
-		$cookie->secureKey( Config::get( 'session.secureKey' ) );
+		$cookie->key( Config::get( 'session.secureKey' ) );
 		$id = $cookie->get( $this->session_name );
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
 			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
@@ -133,7 +133,7 @@ trait Base {
 	//析构函数
 	public function __destruct() {
 		//删除闪存
-		$this->flash('[del]');
+		$this->flash( '[del]' );
 		$this->write();
 		if ( mt_rand( 1, 5 ) ) {
 			$this->gc();
