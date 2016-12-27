@@ -26,13 +26,11 @@ trait Base {
 	 * @return string
 	 */
 	final private function getSessionId() {
-		$cookie = new Cookie();
-		$cookie->key( Config::get( 'session.secureKey' ) );
-		$id = $cookie->get( $this->session_name );
+		$id = Cookie::get( $this->session_name );
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
 			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
 		}
-		$cookie->set( $this->session_name, $id, $this->expire, '/', Config::get( 'session.domain' ) );
+		Cookie::set( $this->session_name, $id, $this->expire, '/', Config::get( 'session.domain' ) );
 
 		return $id;
 	}

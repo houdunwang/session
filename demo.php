@@ -34,5 +34,13 @@ $config = [
 	]
 ];
 \houdunwang\config\Config::set( 'session', $config );
+//设置cookie
+$config = [
+	//密钥
+	'key'    => '405305c793179059f8fd52436876750c587d19ccfbbe2a643743d021dbdcd79c',
+	//前缀
+	'prefix' => 'HOUDUNWANG##'
+];
+\houdunwang\config\Config::set( 'cookie', $config );
 //\houdunwang\session\Session::set('a',33);
 echo \houdunwang\session\Session::get( 'a' );
