@@ -9,8 +9,6 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
 
-use houdunwang\config\Config;
-
 /**
  * 文件处理
  * Class FileHandler
@@ -24,7 +22,7 @@ class FileHandler implements AbSession {
 
 	//连接
 	public function connect() {
-		$dir = Config::get( 'session.file.path' );
+		$dir = $this->facade->config( 'file.path' );
 		//创建目录
 		if ( ! is_dir( $dir ) ) {
 			mkdir( $dir, 0755, true );

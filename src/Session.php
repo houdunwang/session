@@ -9,6 +9,7 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session;
 
+use houdunwang\arr\Arr;
 use houdunwang\config\Config;
 
 /**URL处理类
@@ -19,33 +20,50 @@ use houdunwang\config\Config;
 class Session {
 	//操作驱动
 	protected $link;
+	protected $config;
 
-	//设置驱动
-	protected static function driver( $driver = null ) {
-		$driver = $driver ?: Config::get( 'session.driver' );
-		$driver = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
-		static $links = [ ];
-		if ( ! isset( $links[ $driver ] ) ) {
-			$obj       = new Session();
-			$obj->link = new $driver;
-			$obj->link->bootstrap();
+	public function __construct() {
+		$this->config( Config::get( 'session' ) );
+	}
 
-			$links[ $driver ] = $obj;
+	//设置配置项
+	public function config( $config, $value = null ) {
+		if ( is_array( $config ) ) {
+			$this->config = $config;
+
+			return $this;
+		} else if ( is_null( $value ) ) {
+			return Arr::get( $this->config, $config );
+		} else {
+			$this->config = Arr::set( $this->config, $config, $value );
+
+			return $this;
 		}
+	}
+	//设置驱动
+	protected function driver( $driver = null ) {
+		$driver     = $driver ?: Config::get( 'session.driver' );
+		$driver     = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
+		$this->link = new $driver($this);
+		$this->link->bootstrap();
 
-		return $links[ $driver ];
+		return $this;
 	}
 
 	public function __call( $method, $params ) {
 		if ( is_null( $this->link ) ) {
 			$this->driver();
 		}
-		if ( method_exists( $this->link, $method ) ) {
-			return call_user_func_array( [ $this->link, $method ], $params );
-		}
+
+		return call_user_func_array( [ $this->link, $method ], $params );
 	}
 
 	public static function __callStatic( $name, $arguments ) {
-		return call_user_func_array( [ static::driver(), $name ], $arguments );
+		static $link;
+		if ( is_null( $link ) ) {
+			$link = new static();
+		}
+
+		return call_user_func_array( [ $link, $name ], $arguments );
 	}
 }

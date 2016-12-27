@@ -1,6 +1,4 @@
 <?php namespace houdunwang\session\build;
-
-use houdunwang\config\Config;
 use houdunwang\cookie\Cookie;
 
 trait Base {
@@ -12,11 +10,17 @@ trait Base {
 	protected $expire;
 	//session 数据
 	protected $items = [ ];
+	//外观
+	protected $facade;
+
+	public function __construct( $facade ) {
+		$this->facade = $facade;
+	}
 
 	public function bootstrap() {
-		$this->session_name = Config::get( 'session.name' );
+		$this->session_name = $this->facade->config( 'name' );
 		$this->session_id   = $this->getSessionId();
-		$this->expire       = Config::get( 'session.expire' ) ?: 3600;
+		$this->expire       = $this->facade->config( 'expire' ) ?: 3600;
 		$this->connect();
 		$this->items = $this->read() ?: [ ];
 	}
@@ -30,7 +34,7 @@ trait Base {
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
 			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
 		}
-		Cookie::set( $this->session_name, $id, $this->expire, '/', Config::get( 'session.domain' ) );
+		Cookie::set( $this->session_name, $id, $this->expire, '/', $this->facade->config( 'domain' ) );
 
 		return $id;
 	}
