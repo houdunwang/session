@@ -40,13 +40,12 @@ class Session {
 			return $this;
 		}
 	}
+
 	//设置驱动
 	protected function driver( $driver = null ) {
 		$driver     = $driver ?: Config::get( 'session.driver' );
 		$driver     = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
-		$this->link = new $driver($this);
-		$this->link->bootstrap();
-
+		$this->link = new $driver( $this );
 		return $this;
 	}
 
@@ -58,12 +57,16 @@ class Session {
 		return call_user_func_array( [ $this->link, $method ], $params );
 	}
 
-	public static function __callStatic( $name, $arguments ) {
+	public static function single() {
 		static $link;
 		if ( is_null( $link ) ) {
 			$link = new static();
 		}
 
-		return call_user_func_array( [ $link, $name ], $arguments );
+		return $link;
+	}
+
+	public static function __callStatic( $name, $arguments ) {
+		return call_user_func_array( [ static::single(), $name ], $arguments );
 	}
 }

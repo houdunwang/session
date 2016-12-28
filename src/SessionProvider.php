@@ -17,11 +17,13 @@ class SessionProvider extends ServiceProvider {
 	public $defer = true;
 
 	public function boot() {
+		//开启会话
+		\Session::bootstrap();
 	}
 
 	public function register() {
 		$this->app->single( 'Session', function ( $app ) {
-			return new Session( $app );
+			return Session::single();
 		} );
 	}
 

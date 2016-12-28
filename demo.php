@@ -42,5 +42,7 @@ $config = [
 	'prefix' => 'HOUDUNWANG##'
 ];
 \houdunwang\config\Config::set( 'cookie', $config );
+\houdunwang\session\Session::bootstrap();
 //\houdunwang\session\Session::set('a',33);
+
 echo \houdunwang\session\Session::get( 'a' );
