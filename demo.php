@@ -5,8 +5,6 @@ $config = [
 	'driver'    => 'file',
 	//session_name
 	'name'      => 'hdcmsid',
-	//cookie加密密钥
-	'secureKey' => 'houdunwang88',
 	//有效域名
 	'domain'    => '',
 	//过期时间 0 会话时间 3600 为一小时

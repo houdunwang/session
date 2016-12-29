@@ -9,9 +9,9 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session;
 
-use hdphp\kernel\ServiceFacade;
+use houdunwang\framework\build\Facade;
 
-class SessionFacade extends ServiceFacade {
+class SessionFacade extends Facade {
 	public static function getFacadeAccessor() {
 		return 'Session';
 	}

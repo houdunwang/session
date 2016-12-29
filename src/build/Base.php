@@ -1,4 +1,5 @@
 <?php namespace houdunwang\session\build;
+
 use houdunwang\cookie\Cookie;
 
 trait Base {
@@ -9,7 +10,7 @@ trait Base {
 	//过期时间
 	protected $expire;
 	//session 数据
-	protected $items = [ ];
+	protected static $items = [ ];
 	//外观
 	protected $facade;
 
@@ -22,7 +23,9 @@ trait Base {
 		$this->session_id   = $this->getSessionId();
 		$this->expire       = $this->facade->config( 'expire' ) ?: 3600;
 		$this->connect();
-		$this->items = $this->read() ?: [ ];
+		self::$items = $this->read() ?: [ ];
+
+		return $this;
 	}
 
 	/**
@@ -47,7 +50,7 @@ trait Base {
 	 * @return bool
 	 */
 	public function has( $name ) {
-		return isset( $this->items[ $name ] );
+		return isset( self::$items[ $name ] );
 	}
 
 	/**
@@ -59,7 +62,7 @@ trait Base {
 	 * @return mixed
 	 */
 	public function set( $name, $value ) {
-		$tmp =& $this->items;
+		$tmp =& self::$items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( ! isset( $tmp[ $d ] ) ) {
 				$tmp[ $d ] = [ ];
@@ -78,7 +81,7 @@ trait Base {
 	 * @return null
 	 */
 	public function get( $name = '' ) {
-		$tmp = $this->items;
+		$tmp = self::$items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( isset( $tmp[ $d ] ) ) {
 				$tmp = $tmp[ $d ];
@@ -98,8 +101,8 @@ trait Base {
 	 * @return bool
 	 */
 	public function del( $name ) {
-		if ( isset( $this->items[ $name ] ) ) {
-			unset( $this->items[ $name ] );
+		if ( isset( self::$items[ $name ] ) ) {
+			unset( self::$items[ $name ] );
 		}
 
 		return true;
@@ -110,7 +113,7 @@ trait Base {
 	 * @return mixed
 	 */
 	public function all() {
-		return $this->items;
+		return self::$items;
 	}
 
 	/**
