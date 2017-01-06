@@ -14,7 +14,7 @@ class MemcacheHandler implements AbSession {
 	private $memcache;
 
 	public function connect() {
-		$options        =$this->facade->config('memcache');
+		$options        =$this->config('memcache');
 		$this->memcache = new \Memcache();
 		$this->memcache->connect( $options['host'], $options['port'] );
 	}

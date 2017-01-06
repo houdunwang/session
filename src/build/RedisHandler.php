@@ -19,7 +19,7 @@ class RedisHandler implements AbSession {
 	private $redis;
 
 	public function connect() {
-		$config      = $this->facade->config( 'redis' );
+		$config      = $this->config( 'redis' );
 		$this->redis = new \Redis();
 		$this->redis->connect( $config['host'], $config['port'] );
 		if ( ! empty( $config['password'] ) ) {

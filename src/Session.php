@@ -45,7 +45,10 @@ class Session {
 	protected function driver( $driver = null ) {
 		$driver     = $driver ?: Config::get( 'session.driver' );
 		$driver     = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
-		$this->link = new $driver( $this );
+		$this->link = new $driver();
+		$this->link->config( Config::get( 'session' ) );
+		$this->link->connect();
+
 		return $this;
 	}
 

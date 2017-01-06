@@ -14,10 +14,9 @@ use houdunwang\framework\build\Provider;
 class SessionProvider extends Provider {
 
 	//延迟加载
-	public $defer = false;
+	public $defer = true;
 
 	public function boot() {
-		Session::bootstrap();
 	}
 
 	public function register() {

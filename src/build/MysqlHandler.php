@@ -20,7 +20,7 @@ class MysqlHandler implements AbSession {
 
 	//初始
 	public function connect() {
-		$this->link  = ( new Db() )->table( $this->facade->config( 'mysql.table' ) );
+		$this->link  = ( new Db() )->table( $this->config( 'mysql.table' ) );
 		$this->table = $this->link->getTable();
 	}
 

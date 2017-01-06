@@ -22,7 +22,7 @@ class FileHandler implements AbSession {
 
 	//连接
 	public function connect() {
-		$dir = $this->facade->config( 'file.path' );
+		$dir = $this->config( 'file.path' );
 		//创建目录
 		if ( ! is_dir( $dir ) ) {
 			mkdir( $dir, 0755, true );

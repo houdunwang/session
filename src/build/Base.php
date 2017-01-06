@@ -1,5 +1,6 @@
 <?php namespace houdunwang\session\build;
 
+use houdunwang\arr\Arr;
 use houdunwang\cookie\Cookie;
 
 trait Base {
@@ -10,20 +11,31 @@ trait Base {
 	//过期时间
 	protected $expire;
 	//session 数据
-	protected static $items = [ ];
-	//外观
-	protected $facade;
+	protected $items = [ ];
+	//配置
+	protected $config;
 
-	public function __construct( $facade ) {
-		$this->facade = $facade;
+	//设置配置项
+	public function config( $config, $value = null ) {
+		if ( is_array( $config ) ) {
+			$this->config = $config;
+
+			return $this;
+		} else if ( is_null( $value ) ) {
+			return Arr::get( $this->config, $config );
+		} else {
+			$this->config = Arr::set( $this->config, $config, $value );
+
+			return $this;
+		}
 	}
 
 	public function bootstrap() {
-		$this->session_name = $this->facade->config( 'name' );
+		$this->session_name = $this->config( 'name' );
 		$this->session_id   = $this->getSessionId();
-		$this->expire       = $this->facade->config( 'expire' ) ?: 3600;
+		$this->expire       = $this->config( 'expire' ) ?: 3600;
 		$this->connect();
-		self::$items = $this->read() ?: [ ];
+		$this->items = $this->read() ?: [ ];
 
 		return $this;
 	}
@@ -37,7 +49,7 @@ trait Base {
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
 			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
 		}
-		Cookie::set( $this->session_name, $id, $this->expire, '/', $this->facade->config( 'domain' ) );
+		Cookie::set( $this->session_name, $id, $this->expire, '/', $this->config( 'domain' ) );
 
 		return $id;
 	}
@@ -50,7 +62,7 @@ trait Base {
 	 * @return bool
 	 */
 	public function has( $name ) {
-		return isset( self::$items[ $name ] );
+		return isset( $this->items[ $name ] );
 	}
 
 	/**
@@ -62,7 +74,7 @@ trait Base {
 	 * @return mixed
 	 */
 	public function set( $name, $value ) {
-		$tmp =& self::$items;
+		$tmp =& $this->items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( ! isset( $tmp[ $d ] ) ) {
 				$tmp[ $d ] = [ ];
@@ -81,7 +93,7 @@ trait Base {
 	 * @return null
 	 */
 	public function get( $name = '' ) {
-		$tmp = self::$items;
+		$tmp = $this->items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( isset( $tmp[ $d ] ) ) {
 				$tmp = $tmp[ $d ];
@@ -101,8 +113,8 @@ trait Base {
 	 * @return bool
 	 */
 	public function del( $name ) {
-		if ( isset( self::$items[ $name ] ) ) {
-			unset( self::$items[ $name ] );
+		if ( isset( $this->items[ $name ] ) ) {
+			unset( $this->items[ $name ] );
 		}
 
 		return true;
@@ -113,7 +125,7 @@ trait Base {
 	 * @return mixed
 	 */
 	public function all() {
-		return self::$items;
+		return $this->items;
 	}
 
 	/**
