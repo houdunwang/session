@@ -56,8 +56,8 @@ class FileHandler implements AbSession {
 	//垃圾回收
 	public function gc() {
 		foreach ( glob( $this->dir . '/*.php' ) as $f ) {
-			if ( basename( $f ) != basename( $this->file ) && ( filemtime( $this->file ) + $this->expire ) < time() ) {
-				unlink( $this->file );
+			if ( basename( $f ) != basename( $this->file ) && ( filemtime( $f ) + $this->expire ) < time() ) {
+				unlink( $f );
 			}
 		}
 	}

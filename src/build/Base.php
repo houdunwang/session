@@ -125,7 +125,9 @@ trait Base {
 	 * @return mixed
 	 */
 	public function all() {
-		return $this->items;
+		$items = $this->items;
+
+		return $items;
 	}
 
 	/**
@@ -136,23 +138,41 @@ trait Base {
 	 *
 	 * @return bool|mixed|void
 	 */
-	public function flash( $name, $value = '[get]' ) {
+	public function flash( $name = null, $value = '[get]' ) {
+		if ( is_null( $name ) ) {
+			return $this->get( '_FLASH_' );
+		}
+		//删除所有闪存
 		if ( $name == '[del]' ) {
 			return $this->del( '_FLASH_' );
 		}
 		if ( $value == '[get]' ) {
-			return $this->get( '_FLASH_.' . $name );
+			if ( $data = $this->get( '_FLASH_.' . $name ) ) {
+				return $data[0];
+			}
+
+			return;
+		}
+		if ( $value == [ 'del' ] ) {
+			return $this->del( '_FLASH_.' . $name );
 		}
 
-		return $this->set( '_FLASH_.' . $name, $value );
+		return $this->set( '_FLASH_.' . $name, [ $value, __URL__ ] );
 	}
 
 	//析构函数
 	public function __destruct() {
-		//删除闪存
-		$this->flash( '[del]' );
+		//删除无效闪存
+		$flash = (array) $this->flash();
+		foreach ( $flash as $k => $v ) {
+			if ( $v[1] != __URL__ ) {
+				$this->flash( $k, '[del]' );
+			}
+		}
+
+		//储存数据
 		$this->write();
-		if ( mt_rand( 1, 5 ) ) {
+		if ( mt_rand( 1, 5 ) == 5 ) {
 			$this->gc();
 		}
 	}
