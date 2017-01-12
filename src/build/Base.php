@@ -125,9 +125,7 @@ trait Base {
 	 * @return mixed
 	 */
 	public function all() {
-		$items = $this->items;
-
-		return $items;
+		return $this->items;
 	}
 
 	/**
