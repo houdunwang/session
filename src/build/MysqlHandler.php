@@ -52,7 +52,7 @@ class MysqlHandler implements AbSession {
 	 * @return boolean
 	 */
 	public function gc() {
-		$sql = "DELETE FROM " . $this->table . " WHERE atime<" . ( time() - $this->expire ) . " AND session_id<>'" . session_id() . "'";
+		$sql = "DELETE FROM " . $this->table . " WHERE atime<" . ( time() - $this->expire ) . " AND session_id<>'" . $this->session_id . "'";
 
 		return $this->link->execute( $sql );
 	}

@@ -138,7 +138,7 @@ trait Base {
 	 */
 	public function flash( $name = null, $value = '[get]' ) {
 		if ( is_null( $name ) ) {
-			return $this->get( '_FLASH_' );
+			return $this->get( '_FLASH_' ) ?: [ ];
 		}
 		//删除所有闪存
 		if ( $name == '[del]' ) {
