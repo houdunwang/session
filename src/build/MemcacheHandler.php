@@ -31,11 +31,6 @@ class MemcacheHandler implements AbSession {
 		return $this->memcache->set( $this->session_id, serialize( $this->items ) );
 	}
 
-	//删除
-	public function flush() {
-		return $this->memcache->delete( $this->session_id );
-	}
-
 	//垃圾回收
 	public function gc() {
 	}

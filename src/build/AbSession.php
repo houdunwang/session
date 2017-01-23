@@ -14,8 +14,6 @@ interface AbSession {
 
 	public function read();
 
-	public function write();
-
 	public function gc();
 
 	public function flush();

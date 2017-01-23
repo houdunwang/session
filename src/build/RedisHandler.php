@@ -40,11 +40,6 @@ class RedisHandler implements AbSession {
 		return $this->redis->set( $this->session_id, serialize( $this->items ) );
 	}
 
-	//删除
-	function flush() {
-		return $this->redis->delete( $this->session_id );
-	}
-
 	//垃圾回收
 	function gc() {
 

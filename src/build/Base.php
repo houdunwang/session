@@ -129,6 +129,15 @@ trait Base {
 	}
 
 	/**
+	 * 清除所有数据
+	 * @return bool
+	 */
+	public function flush() {
+		$this->items=[];
+		return true;
+	}
+
+	/**
 	 * 闪存
 	 *
 	 * @param $name

@@ -48,11 +48,6 @@ class FileHandler implements AbSession {
 		file_put_contents( $this->file, $data );
 	}
 
-	//删除所有数据
-	public function flush() {
-		return is_file( $this->file ) or unlink( $this->file );
-	}
-
 	//垃圾回收
 	public function gc() {
 		foreach ( glob( $this->dir . '/*.php' ) as $f ) {

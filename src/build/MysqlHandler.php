@@ -40,13 +40,6 @@ class MysqlHandler implements AbSession {
 		return $this->link->execute( $sql );
 	}
 
-	//卸载
-	public function flush() {
-		$sql = "DELETE FROM " . $this->table . " WHERE session_id='{$this->session_id}'";
-
-		return $this->link->execute( $sql );
-	}
-
 	/**
 	 * SESSION垃圾处理
 	 * @return boolean
