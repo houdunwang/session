@@ -89,16 +89,16 @@ trait Base {
 	 * 获取指定的session数据
 	 *
 	 * @param string $name
-	 *
+	 * @param string $value
 	 * @return null
 	 */
-	public function get( $name = '' ) {
+	public function get( $name = '', $value = null ) {
 		$tmp = $this->items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( isset( $tmp[ $d ] ) ) {
 				$tmp = $tmp[ $d ];
 			} else {
-				return null;
+				return $value;
 			}
 		}
 
