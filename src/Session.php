@@ -48,6 +48,7 @@ class Session {
 		$this->link = new $driver();
 		$this->link->config( Config::get( 'session' ) );
 		$this->link->connect();
+		$this->link->bootstrap();
 
 		return $this;
 	}
