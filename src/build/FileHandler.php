@@ -8,6 +8,7 @@
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
+use houdunwang\config\Config;
 
 /**
  * 文件处理
@@ -22,7 +23,7 @@ class FileHandler implements AbSession {
 
 	//连接
 	public function connect() {
-		$dir = $this->config( 'file.path' );
+		$dir = Config::get( 'session.file.path' );
 		//创建目录
 		if ( ! is_dir( $dir ) ) {
 			mkdir( $dir, 0755, true );

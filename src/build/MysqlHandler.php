@@ -9,6 +9,7 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
 
+use houdunwang\config\Config;
 use houdunwang\db\Db;
 
 class MysqlHandler implements AbSession {
@@ -20,7 +21,7 @@ class MysqlHandler implements AbSession {
 
 	//初始
 	public function connect() {
-		$this->link  = ( new Db() )->table( $this->config( 'mysql.table' ) );
+		$this->link  = ( new Db() )->table( Config::get( 'session.mysql.table' ) );
 		$this->table = $this->link->getTable();
 	}
 

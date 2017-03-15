@@ -9,12 +9,14 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
 
+use houdunwang\config\Config;
+
 class MemcacheHandler implements AbSession {
 	use Base;
 	private $memcache;
 
 	public function connect() {
-		$options        =$this->config('memcache');
+		$options        = Config::get( 'session.memcache' );
 		$this->memcache = new \Memcache();
 		$this->memcache->connect( $options['host'], $options['port'] );
 	}

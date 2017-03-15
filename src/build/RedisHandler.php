@@ -9,6 +9,8 @@
  * '-------------------------------------------------------------------*/
 namespace houdunwang\session\build;
 
+use houdunwang\config\Config;
+
 class RedisHandler implements AbSession {
 	use Base;
 	/**
@@ -19,7 +21,7 @@ class RedisHandler implements AbSession {
 	private $redis;
 
 	public function connect() {
-		$config      = $this->config( 'redis' );
+		$config      = Config::get( 'session.redis' );
 		$this->redis = new \Redis();
 		$this->redis->connect( $config['host'], $config['port'] );
 		if ( ! empty( $config['password'] ) ) {

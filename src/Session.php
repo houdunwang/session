@@ -20,34 +20,12 @@ use houdunwang\config\Config;
 class Session {
 	//操作驱动
 	protected $link;
-	protected $config;
-
-	public function __construct() {
-		$this->config( Config::get( 'session' ) );
-	}
-
-	//设置配置项
-	public function config( $config, $value = null ) {
-		if ( is_array( $config ) ) {
-			$this->config = $config;
-
-			return $this;
-		} else if ( is_null( $value ) ) {
-			return Arr::get( $this->config, $config );
-		} else {
-			$this->config = Arr::set( $this->config, $config, $value );
-
-			return $this;
-		}
-	}
 
 	//设置驱动
 	protected function driver( $driver = null ) {
 		$driver     = $driver ?: Config::get( 'session.driver' );
 		$driver     = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
 		$this->link = new $driver();
-		$this->link->config( Config::get( 'session' ) );
-		$this->link->connect();
 		$this->link->bootstrap();
 
 		return $this;

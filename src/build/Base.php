@@ -1,6 +1,6 @@
 <?php namespace houdunwang\session\build;
 
-use houdunwang\arr\Arr;
+use houdunwang\config\Config;
 use houdunwang\cookie\Cookie;
 
 trait Base {
@@ -12,28 +12,11 @@ trait Base {
 	protected $expire;
 	//session 数据
 	protected $items = [ ];
-	//配置
-	protected $config;
-
-	//设置配置项
-	public function config( $config, $value = null ) {
-		if ( is_array( $config ) ) {
-			$this->config = $config;
-
-			return $this;
-		} else if ( is_null( $value ) ) {
-			return Arr::get( $this->config, $config );
-		} else {
-			$this->config = Arr::set( $this->config, $config, $value );
-
-			return $this;
-		}
-	}
 
 	public function bootstrap() {
-		$this->session_name = $this->config( 'name' );
+		$this->session_name = Config::get( 'session.name' );
 		$this->session_id   = $this->getSessionId();
-		$this->expire       = $this->config( 'expire' ) ?: 3600;
+		$this->expire       = Config::get( 'session.expire' ) ?: 3600;
 		$this->connect();
 		$this->items = $this->read() ?: [ ];
 
@@ -49,7 +32,7 @@ trait Base {
 		if ( ! $id || substr( $id, 0, 5 ) != 'hdphp' ) {
 			$id = 'hdphp' . md5( microtime( true ) ) . mt_rand( 1, 99999 );
 		}
-		Cookie::set( $this->session_name, $id, $this->expire, '/', $this->config( 'domain' ) );
+		Cookie::set( $this->session_name, $id, $this->expire, '/', Config::get( 'session.domain' ) );
 
 		return $id;
 	}
@@ -90,6 +73,7 @@ trait Base {
 	 *
 	 * @param string $name
 	 * @param string $value
+	 *
 	 * @return null
 	 */
 	public function get( $name = '', $value = null ) {
@@ -133,7 +117,8 @@ trait Base {
 	 * @return bool
 	 */
 	public function flush() {
-		$this->items=[];
+		$this->items = [ ];
+
 		return true;
 	}
 
