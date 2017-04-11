@@ -7,9 +7,9 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
+
 namespace houdunwang\session;
 
-use houdunwang\arr\Arr;
 use houdunwang\config\Config;
 
 /**URL处理类
@@ -40,7 +40,7 @@ class Session {
 	}
 
 	public static function single() {
-		static $link;
+		static $link = null;
 		if ( is_null( $link ) ) {
 			$link = new static();
 		}

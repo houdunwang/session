@@ -7,6 +7,7 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
+
 namespace houdunwang\session\build;
 
 use houdunwang\config\Config;
@@ -21,24 +22,23 @@ class MysqlHandler implements AbSession {
 
 	//初始
 	public function connect() {
-		$this->link  = ( new Db() )->table( Config::get( 'session.mysql.table' ) );
+		$this->link  = Db::table( Config::get( 'session.mysql.table' ) );
 		$this->table = $this->link->getTable();
 	}
 
 	//读取
 	public function read() {
-		$data = $this->link->where( 'session_id', $this->session_id )->where( 'atime', '>', time() - $this->expire )->pluck( 'data' );
+		$data = $this->link->where( 'session_id', $this->session_id )->pluck( 'data' );
 
-		return $data ? unserialize( $data ) : [ ];
+		return $data ? json_decode( $data, true ) : [];
 	}
 
 	//写入
 	public function write() {
-		$data = serialize( $this->items );
+		$data = json_encode( $this->items, JSON_UNESCAPED_UNICODE );
 		$sql  = "REPLACE INTO " . $this->table . "(session_id,data,atime) ";
-		$sql .= "VALUES('{$this->session_id}','$data'," . time() . ')';
-
-		return $this->link->execute( $sql );
+		$sql  .= "VALUES('{$this->session_id}','$data'," . (time()+1440) . ')';
+		$this->link->execute( $sql );
 	}
 
 	/**
@@ -46,7 +46,9 @@ class MysqlHandler implements AbSession {
 	 * @return boolean
 	 */
 	public function gc() {
-		$sql = "DELETE FROM " . $this->table . " WHERE atime<" . ( time() - $this->expire ) . " AND session_id<>'" . $this->session_id . "'";
+		$sql = "DELETE FROM " . $this->table
+		       . " WHERE atime<" . ( time() - $this->expire + 1440 )
+		       . " AND session_id<>'" . $this->session_id . "'";
 
 		return $this->link->execute( $sql );
 	}

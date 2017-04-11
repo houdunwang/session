@@ -34,12 +34,12 @@ class RedisHandler implements AbSession {
 	function read() {
 		$data = $this->redis->get( $this->session_id );
 
-		return $data ? unserialize( $data ) : [ ];
+		return $data ? json_decode( $data,true ) : [ ];
 	}
 
 	//写入
 	function write() {
-		return $this->redis->set( $this->session_id, serialize( $this->items ) );
+		return $this->redis->set( $this->session_id, json_encode( $this->items ,JSON_UNESCAPED_UNICODE) );
 	}
 
 	//垃圾回收

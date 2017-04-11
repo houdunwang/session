@@ -11,20 +11,20 @@ trait Base {
 	//过期时间
 	protected $expire;
 	//session 数据
-	protected $items = [ ];
+	protected $items = [];
 
 	public function bootstrap() {
 		$this->session_name = Config::get( 'session.name' );
+		$this->expire       = intval( Config::get( 'session.expire' ) );
 		$this->session_id   = $this->getSessionId();
-		$this->expire       = Config::get( 'session.expire' ) ?: 3600;
 		$this->connect();
-		$this->items = $this->read() ?: [ ];
+		$this->items = $this->read() ?: [];
 
 		return $this;
 	}
 
 	/**
-	 * 获取客户端IP
+	 * 设置SESSION_ID
 	 * @return string
 	 */
 	final private function getSessionId() {
@@ -60,7 +60,7 @@ trait Base {
 		$tmp =& $this->items;
 		foreach ( explode( '.', $name ) as $d ) {
 			if ( ! isset( $tmp[ $d ] ) ) {
-				$tmp[ $d ] = [ ];
+				$tmp[ $d ] = [];
 			}
 			$tmp = &$tmp[ $d ];
 		}
@@ -117,7 +117,7 @@ trait Base {
 	 * @return bool
 	 */
 	public function flush() {
-		$this->items = [ ];
+		$this->items = [];
 
 		return true;
 	}
@@ -132,7 +132,7 @@ trait Base {
 	 */
 	public function flash( $name = null, $value = '[get]' ) {
 		if ( is_null( $name ) ) {
-			return $this->get( '_FLASH_' ) ?: [ ];
+			return $this->get( '_FLASH_' ) ?: [];
 		}
 		//删除所有闪存
 		if ( $name == '[del]' ) {

@@ -7,6 +7,7 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
+
 namespace houdunwang\session\build;
 
 use houdunwang\config\Config;
@@ -25,12 +26,12 @@ class MemcacheHandler implements AbSession {
 	public function read() {
 		$data = $this->memcache->get( $this->session_id );
 
-		return $data ? unserialize( $data ) : [ ];
+		return $data ? json_decode( $data, true ) : [];
 	}
 
 	//写入
 	public function write() {
-		return $this->memcache->set( $this->session_id, serialize( $this->items ) );
+		return $this->memcache->set( $this->session_id, json_encode( $this->items, JSON_UNESCAPED_UNICODE ) );
 	}
 
 	//垃圾回收
