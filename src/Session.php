@@ -14,41 +14,47 @@ use houdunwang\config\Config;
 
 /**URL处理类
  * Class Session
+ *
  * @package hdphp\session
- * @author 向军 <2300071698@qq.com>
+ * @author  向军 <2300071698@qq.com>
  */
-class Session {
-	//操作驱动
-	protected $link;
+class Session
+{
+    //操作驱动
+    protected $link;
 
-	//设置驱动
-	protected function driver( $driver = null ) {
-		$driver     = $driver ?: Config::get( 'session.driver' );
-		$driver     = '\houdunwang\session\\build\\' . ucfirst( $driver ) . 'Handler';
-		$this->link = new $driver();
-		$this->link->bootstrap();
+    //设置驱动
+    protected function driver($driver = 'file')
+    {
+        $driver     = $driver ?: Config::get('session.driver');
+        $driver     = '\houdunwang\session\\build\\'.ucfirst($driver).'Handler';
+        $this->link = new $driver();
+        $this->link->bootstrap();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function __call( $method, $params ) {
-		if ( is_null( $this->link ) ) {
-			$this->driver();
-		}
+    public function __call($method, $params)
+    {
+        if (is_null($this->link)) {
+            $this->driver();
+        }
 
-		return call_user_func_array( [ $this->link, $method ], $params );
-	}
+        return call_user_func_array([$this->link, $method], $params);
+    }
 
-	public static function single() {
-		static $link = null;
-		if ( is_null( $link ) ) {
-			$link = new static();
-		}
+    public static function single()
+    {
+        static $link = null;
+        if (is_null($link)) {
+            $link = new static();
+        }
 
-		return $link;
-	}
+        return $link;
+    }
 
-	public static function __callStatic( $name, $arguments ) {
-		return call_user_func_array( [ static::single(), $name ], $arguments );
-	}
+    public static function __callStatic($name, $arguments)
+    {
+        return call_user_func_array([static::single(), $name], $arguments);
+    }
 }
