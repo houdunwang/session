@@ -21,26 +21,25 @@ use houdunwang\config\Config;
 class Session
 {
     //操作驱动
-    protected $link;
+    protected static $link;
 
     //设置驱动
-    protected function driver($driver = 'file')
+    public function driver($driver = '')
     {
         $driver     = $driver ?: Config::get('session.driver');
         $driver     = '\houdunwang\session\\build\\'.ucfirst($driver).'Handler';
-        $this->link = new $driver();
-        $this->link->bootstrap();
+        self::$link = new $driver();
 
         return $this;
     }
 
     public function __call($method, $params)
     {
-        if (is_null($this->link)) {
+        if (is_null(self::$link)) {
             $this->driver();
         }
 
-        return call_user_func_array([$this->link, $method], $params);
+        return call_user_func_array([self::$link, $method], $params);
     }
 
     public static function single()
