@@ -27,6 +27,7 @@ class Session
     public function driver($driver = '')
     {
         $driver     = $driver ?: Config::get('session.driver');
+        $driver     = $driver ?: 'file';
         $driver     = '\houdunwang\session\\build\\'.ucfirst($driver).'Handler';
         self::$link = new $driver();
 
