@@ -89,7 +89,9 @@ trait Base
             $tmp = &$tmp[$d];
         }
 
-        return $tmp = $value;
+        $tmp = $value;
+
+        return true;
     }
 
     /**
