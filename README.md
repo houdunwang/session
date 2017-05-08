@@ -57,38 +57,38 @@ $config = [
 ##使用
 ####设置
 ```
-\houdunwang\session\Session::set('name','houdunwang.com');
+Session::set('name','houdunwang.com');
 ```
 
 ####闪存
 通过 flash 指令设置的数据会在下次请求结束时自动删除, 这类动作我们称为闪存数据。
 
 ```
-\houdunwang\session\Session::flash('name','houdunren.com');
+Session::flash('name','houdunren.com');
 ```
 
 ####获取
 ```
-\houdunwang\session\Session::get('name');
+Session::get('name');
 ```
 
 ####获取所有
 ```
-\houdunwang\session\Session::all();
+Session::all();
 ```
 
 ####判断
 ```
-\houdunwang\session\Session::has('name');
+Session::has('name');
 ```
 
 ####删除
 ```
-\houdunwang\session\Session::del('name');
+Session::del('name');
 ```
 
 ####清空
 删除所有数据
 ```
-\houdunwang\session\Session::flush();
+Session::flush();
 ```

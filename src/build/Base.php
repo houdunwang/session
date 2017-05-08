@@ -13,6 +13,8 @@ trait Base
     protected $expire;
     //session 数据
     protected $items = [];
+    //开始时间
+    protected $startTime;
 
     public function bootstrap()
     {
@@ -20,7 +22,8 @@ trait Base
         $this->expire       = intval(Config::get('session.expire'));
         $this->session_id   = $this->getSessionId();
         $this->connect();
-        $this->items = $this->read() ?: [];
+        $this->items     = $this->read() ?: [];
+        $this->startTime = time();
 
         return $this;
     }
@@ -30,11 +33,11 @@ trait Base
      *
      * @return string
      */
-    final private function getSessionId()
+    final protected function getSessionId()
     {
         $id = Cookie::get($this->session_name);
         if ( ! $id) {
-            $id = 'hdphp'.date('h.i.s');
+            $id = 'hdphp'.md5(microtime(true).mt_rand(1, 6));
         }
         Cookie::set(
             $this->session_name,
@@ -164,7 +167,6 @@ trait Base
      */
     public function flash($name = null, $value = '[get]')
     {
-        return [];
         if (is_null($name)) {
             return $this->get('_FLASH_') ?: [];
         }
@@ -183,7 +185,7 @@ trait Base
             return $this->del('_FLASH_.'.$name);
         }
 
-        return $this->set('_FLASH_.'.$name, [$value, NOW]);
+        return $this->set('_FLASH_.'.$name, [$value, $this->startTime]);
     }
 
     //析构函数
@@ -191,14 +193,14 @@ trait Base
     {
         //删除无效闪存
         foreach ($this->flash() as $k => $v) {
-            if ($v[1] != NOW) {
+            if ($v[1] != $this->startTime) {
                 $this->flash($k, '[del]');
             }
         }
         //储存数据
         $this->write();
         if (mt_rand(1, 5) == 5) {
-//            $this->gc();
+            $this->gc();
         }
     }
 }

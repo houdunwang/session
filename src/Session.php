@@ -12,11 +12,11 @@ namespace houdunwang\session;
 
 use houdunwang\config\Config;
 
-/**URL处理类
+/**
+ * SESSION处理类
  * Class Session
  *
- * @package hdphp\session
- * @author  向军 <2300071698@qq.com>
+ * @package houdunwang\session
  */
 class Session
 {

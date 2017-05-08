@@ -41,32 +41,29 @@ class FileHandler implements AbSession
     //读取数据
     public function read()
     {
-        p($this->file);
         if ( ! is_file($this->file)) {
             return [];
         }
+
         return include $this->file;
     }
 
     //保存数据
     public function write()
     {
-        echo $this->file;
-        p($this->items);
         $data = "<?php \nreturn ".var_export($this->items, true).";\n?>";
-        $d = file_put_contents($this->file, $data, LOCK_EX);
-        var_dump($d);
+        file_put_contents($this->file, $data, LOCK_EX);
     }
 
     //垃圾回收
     public function gc()
     {
-//        foreach (glob($this->dir.'/*.php') as $f) {
-//            if (basename($f) != basename($this->file)
-//                && (filemtime($f) + $this->expire + 1440) < time()
-//            ) {
-//                unlink($f);
-//            }
-//        }
+        foreach (glob($this->dir.'/*.php') as $f) {
+            if (basename($f) != basename($this->file)
+                && (filemtime($f) + $this->expire + 1440) < time()
+            ) {
+                unlink($f);
+            }
+        }
     }
 }
