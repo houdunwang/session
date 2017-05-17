@@ -30,6 +30,7 @@ class Session
         $driver     = $driver ?: 'file';
         $driver     = '\houdunwang\session\\build\\'.ucfirst($driver).'Handler';
         self::$link = new $driver();
+        self::$link->bootstrap();
 
         return $this;
     }

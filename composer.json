@@ -1,7 +1,6 @@
 {
   "name": "houdunwang/session",
   "description": "SESSION会话管理组件",
-  "type": "project",
   "keywords": [
     "houdunwang",
     "hdphp",
