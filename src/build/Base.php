@@ -1,29 +1,44 @@
 <?php namespace houdunwang\session\build;
 
+use houdunwang\arr\Arr;
 use houdunwang\config\Config;
 use houdunwang\cookie\Cookie;
 
+/**
+ * Trait Base
+ *
+ * @package houdunwang\session\build
+ */
 trait Base
 {
     //session_id
     protected $session_id;
+
     //session_name
     protected $session_name;
+
     //过期时间
     protected $expire;
+
     //session 数据
     protected $items = [];
+
     //开始时间
-    protected $startTime;
+    static protected $startTime;
 
     public function bootstrap()
     {
         $this->session_name = Config::get('session.name');
         $this->expire       = intval(Config::get('session.expire'));
         $this->session_id   = $this->getSessionId();
+
         $this->connect();
-        $this->items     = $this->read() ?: [];
-        $this->startTime = time();
+        $content     = $this->read() ?: [];
+        $this->items = is_array($content) ? $content : [];
+
+        if (is_null(self::$startTime)) {
+            self::$startTime = microtime(true);
+        }
 
         return $this;
     }
@@ -39,13 +54,7 @@ trait Base
         if ( ! $id) {
             $id = 'hdphp'.md5(microtime(true).mt_rand(1, 6));
         }
-        Cookie::set(
-            $this->session_name,
-            $id,
-            $this->expire,
-            '/',
-            Config::get('session.domain')
-        );
+        Cookie::set($this->session_name, $id, $this->expire, '/', Config::get('session.domain'));
 
         return $id;
     }
@@ -84,17 +93,21 @@ trait Base
      */
     public function set($name, $value)
     {
-        $tmp =& $this->items;
-        foreach (explode('.', $name) as $d) {
-            if ( ! isset($tmp[$d])) {
-                $tmp[$d] = [];
+//        $this->items = Arr::set($this->items,$name,$value);
+        $tmp  =& $this->items;
+        $exts = explode('.', $name);
+        if (is_array($exts) && ! empty($exts)) {
+            foreach ($exts as $d) {
+                if ( ! isset($tmp[$d])) {
+                    $tmp[$d] = [];
+                }
+                $tmp = &$tmp[$d];
             }
-            $tmp = &$tmp[$d];
+
+            $tmp = $value;
+
+            return true;
         }
-
-        $tmp = $value;
-
-        return true;
     }
 
     /**
@@ -108,7 +121,8 @@ trait Base
     public function get($name = '', $value = null)
     {
         $tmp = $this->items;
-        foreach (explode('.', $name) as $d) {
+        $arr = explode('.', $name);
+        foreach ((array)$arr as $d) {
             if (isset($tmp[$d])) {
                 $tmp = $tmp[$d];
             } else {
@@ -170,37 +184,57 @@ trait Base
         if (is_null($name)) {
             return $this->get('_FLASH_') ?: [];
         }
+
         //删除所有闪存
         if ($name == '[del]') {
             return $this->del('_FLASH_');
         }
-        if ($value == '[get]') {
-            if ($data = $this->get('_FLASH_.'.$name)) {
-                return $data[0];
-            }
+        switch ($value) {
+            case '[del]':
+                if (isset($this->items['_FLASH_'][$name])) {
+                    unset($this->items['_FLASH_'][$name]);
+                }
 
-            return;
+                break;
+            case '[get]':
+                if ($data = $this->get('_FLASH_.'.$name)) {
+                    return $data[0];
+                }
+                break;
+            default:
+                return $this->set('_FLASH_.'.$name, [$value, self::$startTime]);
         }
-        if ($value == ['del']) {
-            return $this->del('_FLASH_.'.$name);
-        }
-
-        return $this->set('_FLASH_.'.$name, [$value, $this->startTime]);
     }
 
-    //析构函数
-    public function __destruct()
+    /**
+     * 删除无效闪存
+     */
+    public function clearFlash()
     {
-        //删除无效闪存
         foreach ($this->flash() as $k => $v) {
-            if ($v[1] != $this->startTime) {
+            if ($v[1] != self::$startTime) {
                 $this->flash($k, '[del]');
             }
         }
+    }
+
+    /**
+     * 关闭写入会话数据
+     * 同时执行垃圾清理
+     */
+    public function close()
+    {
         //储存数据
         $this->write();
         if (mt_rand(1, 5) == 5) {
             $this->gc();
         }
+    }
+
+    //析构函数
+    public function __destruct()
+    {
+        $this->clearFlash();
+        $this->close();
     }
 }

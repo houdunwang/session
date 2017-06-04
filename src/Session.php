@@ -13,7 +13,7 @@ namespace houdunwang\session;
 use houdunwang\config\Config;
 
 /**
- * SESSION处理类
+ * SESSION处理
  * Class Session
  *
  * @package houdunwang\session
@@ -23,27 +23,22 @@ class Session
     //操作驱动
     protected static $link;
 
-    //设置驱动
-    public function driver($driver = '')
-    {
-        $driver     = $driver ?: Config::get('session.driver');
-        $driver     = $driver ?: 'file';
-        $driver     = '\houdunwang\session\\build\\'.ucfirst($driver).'Handler';
-        self::$link = new $driver();
-        self::$link->bootstrap();
-
-        return $this;
-    }
-
     public function __call($method, $params)
     {
         if (is_null(self::$link)) {
-            $this->driver();
+            $driver     = ucfirst(Config::get('session.driver'));
+            $class      = '\houdunwang\session\\build\\'.$driver.'Handler';
+            self::$link = new $class();
         }
 
         return call_user_func_array([self::$link, $method], $params);
     }
 
+    /**
+     * 生成实例
+     *
+     * @return null|static
+     */
     public static function single()
     {
         static $link = null;

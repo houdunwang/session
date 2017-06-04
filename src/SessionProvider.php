@@ -23,13 +23,8 @@ class SessionProvider extends Provider
 
     public function register()
     {
-        $this->app->single(
-            'Session',
-            function () {
-                return Session::single();
-            }
-        );
+        $this->app->single('Session', function () {
+            return Session::single();
+        });
     }
-
-
 }

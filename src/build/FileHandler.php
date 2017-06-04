@@ -45,14 +45,15 @@ class FileHandler implements AbSession
             return [];
         }
 
-        return include $this->file;
+        return unserialize(file_get_contents($this->file));
     }
 
     //保存数据
     public function write()
     {
-        $data = "<?php \nreturn ".var_export($this->items, true).";\n?>";
-        file_put_contents($this->file, $data, LOCK_EX);
+        $data = serialize($this->items);
+
+        return file_put_contents($this->file, $data, LOCK_EX);
     }
 
     //垃圾回收
