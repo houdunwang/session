@@ -60,9 +60,7 @@ class FileHandler implements AbSession
     public function gc()
     {
         foreach (glob($this->dir.'/*.php') as $f) {
-            if (basename($f) != basename($this->file)
-                && (filemtime($f) + $this->expire + 1440) < time()
-            ) {
+            if (basename($f) != basename($this->file) && (filemtime($f) + $this->expire + 3600) < time()) {
                 unlink($f);
             }
         }

@@ -41,13 +41,10 @@ class MysqlHandler implements AbSession
     //写入数据
     public function write()
     {
-//        $data = serialize($this->items);
-//        $sql  = "REPLACE INTO ".$this->table."(session_id,data,atime) ";
-//        $sql  .= "VALUES('{$this->session_id}','$data',".(time() + 1440).')';
         $data = [
             'session_id' => $this->session_id,
             'data'       => serialize($this->items),
-            'atime'      => time() + 1440,
+            'atime'      => time(),
         ];
         $this->link->where('session_id', $this->session_id)->replace($data);
     }
@@ -60,7 +57,7 @@ class MysqlHandler implements AbSession
     public function gc()
     {
         $sql = "DELETE FROM ".$this->table
-               ." WHERE atime<".(time() - $this->expire + 1440)
+               ." WHERE atime<".(time() - ($this->expire + 3600))
                ." AND session_id<>'".$this->session_id."'";
 
         return $this->link->execute($sql);
