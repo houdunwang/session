@@ -226,7 +226,7 @@ trait Base
     {
         //储存数据
         $this->write();
-        if (mt_rand(1, 5) == 5) {
+        if (mt_rand(1, 100) == 1) {
             $this->gc();
         }
     }
