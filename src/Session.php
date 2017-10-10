@@ -23,17 +23,6 @@ class Session
     //操作驱动
     protected static $link;
 
-    public function __call($method, $params)
-    {
-        if (is_null(self::$link)) {
-            $driver     = ucfirst(Config::get('session.driver'));
-            $class      = '\houdunwang\session\\build\\'.$driver.'Handler';
-            self::$link = new $class();
-        }
-
-        return call_user_func_array([self::$link, $method], $params);
-    }
-
     /**
      * 生成实例
      *
@@ -41,12 +30,17 @@ class Session
      */
     public static function single()
     {
-        static $link = null;
-        if (is_null($link)) {
-            $link = new static();
+        if (is_null(self::$link)) {
+            $driver = ucfirst(Config::get('session.driver'));
+            $class  = '\houdunwang\session\\build\\'.$driver.'Handler';
+            self::$link = new $class();
         }
+        return self::$link;
+    }
 
-        return $link;
+    public function __call($method, $params)
+    {
+        return call_user_func_array([self::single(), $method], $params);
     }
 
     public static function __callStatic($name, $arguments)

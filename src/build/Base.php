@@ -1,6 +1,5 @@
 <?php namespace houdunwang\session\build;
 
-use houdunwang\arr\Arr;
 use houdunwang\config\Config;
 use houdunwang\cookie\Cookie;
 
@@ -93,7 +92,6 @@ trait Base
      */
     public function set($name, $value)
     {
-//        $this->items = Arr::set($this->items,$name,$value);
         $tmp  =& $this->items;
         $exts = explode('.', $name);
         if (is_array($exts) && ! empty($exts)) {
@@ -161,6 +159,7 @@ trait Base
 
     /**
      * 清除所有数据
+     * 闪存数据不删除
      *
      * @return bool
      */
@@ -181,12 +180,18 @@ trait Base
      */
     public function flash($name = null, $value = '[get]')
     {
-        if (is_null($name)) {
-            return $this->get('_FLASH_') ?: [];
-        }
+        if (is_array($name)) {
+            //分配闪存数据
+            foreach ($name as $name => $value) {
+                $this->set('_FLASH_.'.$name, [$value, self::$startTime]);
+            }
 
-        //删除所有闪存
-        if ($name == '[del]') {
+            return;
+        } elseif (is_null($name)) {
+            //获取闪存数据
+            return $this->get('_FLASH_') ?: [];
+        } elseif ($name == '[del]') {
+            //删除所有闪存
             return $this->del('_FLASH_');
         }
         switch ($value) {
